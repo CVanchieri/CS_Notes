@@ -19,6 +19,16 @@ connection = psycopg2.connect(database=AWSdatabase,
 ### set the cursor connection ##s#
 cur = connection.cursor()
 
+
+""" connection commands  """
+### rollback after an error ###
+connection.rollback()
+### always save changes ###
+connection.commit()
+### close the connection ###
+connection.close()
+
+
 """ sql SELECT basic commands """
 ### selecting columns ### 
 ### SELECT all data from a table ###
@@ -102,6 +112,7 @@ sql_query_union_all = """
 # must have same number and name of columns
 cur.execute(sql_query_union_all) # use cursor to execute query
 
+
 """ sql CREATE TABLE  """
 ### create a table, set columns names, primary key, value types(size) ###
 sql_create_table = """CREATE TABLE >table name< (  
@@ -133,6 +144,7 @@ sql_copy_table_schema = """SELECT * INTO >new table name<  FROM >table name< WHE
 # use a false conditional statement to ignore the data
 cur.execute(sql_copy_table_schema) # use cursor to execute
 
+
 """ sql INSERT commands  """
 ### insert ### 
 ### insert values into all columns in table ###
@@ -158,6 +170,7 @@ for v in data_list:
     sql_insert_values_from_list = format_string.format(val1=v[0], val2=v[1], val3=v[3], val4=v[4])
     cur.execute(sql_insert_values_from_list) # use cursor to execute 
 
+    
 """ sql UPDATE commands  """
 ### update ### 
 ### update all specific row values ###
@@ -175,6 +188,7 @@ cur.execute(sql_update_row_value_conditional) # use cursor to execute
 sql_update_row_value_multi_conditionals = """UPDATE >table name< SET column_1 = "value_1", column_2 = "value_2" WHERE (column_1 = "value_3") AND column_2 = "value_4) OR column_1 = 'value_5;"""
 cur.execute(sql_update_row_value_multi_conditionals) # use cursor to execute
 
+
 """ sql UPSERT commands  """
 ### upsert ### 
 ### when inserting a value it will update that value if already exists ###
@@ -188,6 +202,7 @@ sql_upsert_values = """
 # if inserting a value that already exists will throw error 
 cur.execute(sql_upsert_values) # use cursor to execute
 
+
 """ sql DELETE all data command  """
 ### delte all data in a table ###
 sql_delete_all_data= """DELETE FROM >table name<;"""
@@ -199,15 +214,8 @@ sql_delete_specific_data= """DELETE FROM >table name< WHERE column_1 = "value_1"
 # use conditionals to delete more specific data
 cur.execute(sql_delete_specific_data) # use cursor to execute drop command
 
+
 """ sql DROP TABLE commands  """
 ### drop an entire table ###
 sql_drop_table = """DROP TABLE >table name<;"""
 cur.execute(sql_drop_table) # use cursor to execute drop command
-
-""" connection commands  """
-### rollback after an error ###
-connection.rollback()
-### always save changes ###
-connection.commit()
-### close the connection ###
-connection.close()
