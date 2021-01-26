@@ -8,19 +8,22 @@
 # easy to interpret results
 
 ### Cons ###
+# numerical values only, categorical will not work 
 
 ''' model types '''
 ### simple linear Rrgression ###
 # simple or single-variate linear regression is the simplest case of linear regression with a single independent variable, 𝐱 = 𝑥
+# a straight-line fit to data
+# y=ax+b, where a is commonly known as the slope, and b is commonly known as the intercept
 
 ### multiple linear regression ###
-# multiple or multivariate linear regression is a case of linear regression with two or more independent variables
+# multiple or multivariate linear regression icd s a case of linear regression with two or more independent variables
 
 ### polynomial regression ###
 # you can regard polynomial regression as a generalized case of linear regression. You assume the polynomial dependence between the output and inputs and, consequently, the polynomial estimated regression function
 
 ### ridge regression ###
-# 
+#   
 
 ### lasso regression ###
 #
@@ -32,11 +35,14 @@
 ### setup steps ###
 # load the data
 # clean and organize the data
+# encode data if necessary 
 # set features and target datasets
 # train/test split the data 
 # scale the data if necessary 
 # build the model, fit on the data, run the model
 # run metrics, analyze/view results, adjust parameters, repeat until satisfied...
+
+''' encoding data is '''
 
 
 ''' scaling data is the process of increasing or decreasing the magnitude according to a fixed ratio '''
@@ -56,13 +62,6 @@
 
 ''' model hyperparameter tuning ''' 
 ### optional parameters ### 
-# max_depth,  the longest path between the root node and the leaf node, limit up to what depth I want every tree in my random forest to grow, can overfit test data if to big, macro level
-# min_sample_split, the minimum required number of observations in any given node in order to split it, increasing can minimized difference between train and test score, can underfit if to big 
-# max_leaf_nodes, sets a condition on the splitting of the nodes, If after splitting we have more terminal nodes than the specified number of terminal nodes, it will stop the splitting and the tree
-# min_samples_leaf, specifies the minimum number of samples that should be present in the leaf node after splitting a node, increasing can minimize overfitting, can underfit if to large 
-# n_estimators, determines the number of 'trees' used in the model, increasing can improve results but time complexity also increases, start at 200
-# max_sample (bootstrap sample), determines what fraction of the original dataset is given to any individual tree, will reduce the training time of the model, each tree does not need all the data
-# max_features, resembles the number of maximum features provided to each tree, default value is set to square root of the number of features present in the dataset, helps with overfitting, can underfit if to large 
 
 
 ### model examples ###
@@ -72,25 +71,105 @@ import pandas as pd
 import numpy as np
 import sklearn
 ### target is numerical float, no set category ###
-### making a prediction of gas consumption for 48 US states ###
+### making a prediction of medical charges ###
 
 ### read in the data file ###
-df = pd.read_csv('petrol_consumption.csv')
+df = pd.read_csv('medical_insurance.csv')
 ### show the dataframe shape ###
 print(df.shape)
 ### show the dataframe ###
 df.head()
 
+### view, inspect,understand the data ### 
+df.describe()
+df.isna().sum()
+df.dtypes
+df.corr() 
+
+### check for feature outliers ### 
+### view correlation graphs for each features ### 
+import seaborn as sns 
+sns.heatmap(df.corr() , cmap = 'Wistia' , annot = True)
+sns.pairplot(df)
+### view correlation graphs for each feature vs. target 'charges' ###
+import matplotlib.pyplot as plt 
+x_col = "charges"
+y_columns = ['age', 'sex', 'bmi', 'children', 'smoker', 'region']
+for y_col in y_columns:
+    figure = plt.figure
+    ax = plt.gca()
+    ax.scatter(df[x_col], df[y_col])
+    ax.set_xlabel(x_col)
+    ax.set_ylabel(y_col)
+    ax.set_title(f'''{x_col} vs {y_col}''')
+    plt.show()
+### view 2 feature correlation with trendline ###
+# regplot
+plt.title('Regression line Between Age and Charges')
+sns.regplot(x = df['age'], y= df['charges'])
+plt.show()
+# swarmplot
+plt.title('Relation Between BMI and Charges')
+sns.swarmplot(x=df['smoker'],y = df['charges'] )
+plt.show()
+# barplot 
+plt.title('Relation between Children and Charges')
+sns.barplot(x=df['children'], y=df['charges'])
+### view 3+ feature correlation with trendline ###
+# lmplot
+sns.lmplot(x = 'bmi',y = 'charges', hue = 'smoker' , data=df)
+plt.show()
+# single feature outlier check
+import seaborn as sns 
+sns.boxplot(y = 'age', data = df)
+
+### function to find outliers ###
+def outlier_zscore(data):
+    global outliers,zscore
+    outliers = []
+    zscore = []
+    threshold = 3.5
+    mean = np.mean(data)
+    std = np.std(data)
+    for i in data:
+        z_score= (i - mean)/std 
+        zscore.append(z_score)
+        if np.abs(z_score) > threshold:
+            outliers.append(i)
+    print(outliers)
+    return len(outliers), outliers
+### run each feature wanted through the function ### 
+age_outliers_number, age_outliers = outlier_zscore(df.age)
+sex_outliers_number, sex_outliers = outlier_zscore(df.sex)
+bmi_outliers_number, bmi_outliers = outlier_zscore(df.bmi)
+children_outliers_number, children_outliers = outlier_zscore(df.children)
+smoker_outliers_number, smoker_outliers = outlier_zscore(df.smoker)
+region_outliers_number, region_outliers = outlier_zscore(df.region)
+charges_outliers_number, charges_outliers = outlier_zscore(df.charges)
+### removal of outliers from each feature ###
+# removing the outliers of bmi 
+for num, i in enumerate(df['bmi']):
+    if i in bmi_outliers:
+        df['bmi'][num] = 48.5
+# removing the outliers of charges
+for num, i in enumerate(df['charges']):
+    if i in charges_outliers:
+        df['charges'][num] = 55000.00000
+
 ### divide the data into features & target sets ###
 # target is column 4, Petrol_Consumption
-X = df.iloc[:, 0:4].values
-y = df.iloc[:, 4].values
+X = df.iloc[:, 0:6].values
+y = df.iloc[:, 6].values
 
 ### split the into training and testing data sets ###
 ### import ###
 from sklearn.model_selection import train_test_split
 ### set the train test split parameters ###
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+print(" Shape of x_train = ", X_train.shape)
+print(" Shape of x_test = ", X_test.shape)
+print(" Shape of y_train = ", y_train.shape)
+print(" Shape of y_test = ", y_test.shape)
 
 ### feature scaling ### 
 ### import ###
@@ -107,93 +186,31 @@ from sklearn.linear_model import LinearRegression
 regressor = LinearRegression()
 # fit the model on the X, Y train data
 regressor.fit(X_train, y_train)
-### best intercet & slope 
-print(regressor.intercept_)
-print(regressor.coef_)
 # set the y_pred prediction on the X test data
 y_pred = regressor.predict(X_test)
+### create data frame of predictions and results ### 
+y_pred_df = pd.DataFrame(y_pred, columns=["Predicted Values" ])
+y_test_df = pd.DataFrame(np.array(y_test), columns=["Real Values"])
+pd.concat([y_test_df , y_pred_df] , axis=1)
 ### metrics to use for regression ###
-# mean absolute error
-# mean squared error
-# root mean squared error
+# r2score, model accuracy
 ### import ###
 from sklearn import metrics
-print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
-print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
-print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
-### best intercet & slope 
-r_sq = regressor.score(x_, y_train)
-print('coefficient of determination:', r_sq)
 print('intercept:', regressor.intercept_)
 print('coefficients:', regressor.coef_)
-from sklearn.model_selection import cross_val_score
-# storing the ten scores in an object called mse
-mse = cross_val_score(regressor,X_train,y_train,scoring='neg_mean_squared_error',cv=10)
-print('mse', mse.mean())
+score = metrics.r2_score(y_test , y_pred)
+print("R2 Score : {}".format(score))
+print("Model Accuracy: {}%".format(score * 100))
+
 
 ''' Polynomial Linear Regression model '''
+''' Polynomial Regression is a form of linear regression in which the relationship between the independent 
+variable x and dependent variable y is modeled as an nth degree polynomial. Polynomial regression fits a 
+nonlinear relationship between the value of x and the corresponding conditional mean of y, denoted E(y |x) '''
 ### import ###
 import pandas as pd
 import numpy as np
 import sklearn
-### target is numerical float, no set category ###
-### making a prediction of gas consumption for 48 US states ###
-
-### read in the data file ###
-df = pd.read_csv('petrol_consumption.csv')
-### show the dataframe shape ###
-print(df.shape)
-### show the dataframe ###
-df.head()
-
-### divide the data into features & target sets ###
-# target is column 4, Petrol_Consumption
-X = df.iloc[:, 0:4].values
-y = df.iloc[:, 4].values
-
-### split the into training and testing data sets ###
-### import ###
-from sklearn.model_selection import train_test_split
-### set the train test split parameters ###
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-### feature scaling ### 
-### import ###
-from sklearn.preprocessing import Normalizer
-### set the scalar ###
-nm = Normalizer()
-X_train = nm.fit_transform(X_train)
-X_test = nm.transform(X_test)
-
-### train the PolynomialRegression model ###
-### import ###
-from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures
-### initiate the Polynomial and fit transform the data ###
-x_ = PolynomialFeatures(degree=2, include_bias=False).fit_transform(X_train)
-### set the regressor model ###
-regressor = LinearRegression().fit(x_, y_train)
-# set the y_pred prediction on the X test data
-y_pred = regressor.predict(x_)
-### import ###
-from sklearn import metrics
-### metrics to use for regression ###
-# mean absolute error
-# mean squared error
-# root mean squared error
-print('Mean Absolute Error:', metrics.mean_absolute_error(y_train, y_pred))
-print('Mean Squared Error:', metrics.mean_squared_error(y_train, y_pred))
-print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_train, y_pred)))
-### best intercet & slope 
-r_sq = regressor.score(x_, y_train)
-print('coefficient of determination:', r_sq)
-print('intercept:', regressor.intercept_)
-print('coefficients:', regressor.coef_)
-from sklearn.model_selection import cross_val_score
-# storing the ten scores in an object called mse
-mse = cross_val_score(regressor,x_, y_train,scoring='neg_mean_squared_error',cv=10)
-print('mse', mse.mean())
-
 
 ''' Linear RidgeRegression model '''
 ### import ###
@@ -204,16 +221,49 @@ import sklearn
 ### making a prediction of gas consumption for 48 US states ###
 
 ### read in the data file ###
-df = pd.read_csv('petrol_consumption.csv')
+df = pd.read_csv('insurance.csv')
 ### show the dataframe shape ###
 print(df.shape)
 ### show the dataframe ###
 df.head()
 
+### function to find outliers ###
+def outlier_zscore(data):
+    global outliers,zscore
+    outliers = []
+    zscore = []
+    threshold = 3.5
+    mean = np.mean(data)
+    std = np.std(data)
+    for i in data:
+        z_score= (i - mean)/std 
+        zscore.append(z_score)
+        if np.abs(z_score) > threshold:
+            outliers.append(i)
+    print(outliers)
+    return len(outliers), outliers
+### run each feature wanted through the function ### 
+age_outliers_number, age_outliers = outlier_zscore(df.age)
+sex_outliers_number, sex_outliers = outlier_zscore(df.sex)
+bmi_outliers_number, bmi_outliers = outlier_zscore(df.bmi)
+children_outliers_number, children_outliers = outlier_zscore(df.children)
+smoker_outliers_number, smoker_outliers = outlier_zscore(df.smoker)
+region_outliers_number, region_outliers = outlier_zscore(df.region)
+charges_outliers_number, charges_outliers = outlier_zscore(df.charges)
+### removal of outliers from each feature ###
+# removing the outliers of bmi 
+for num, i in enumerate(df['bmi']):
+    if i in bmi_outliers:
+        df['bmi'][num] = 48.5
+# removing the outliers of charges
+for num, i in enumerate(df['charges']):
+    if i in charges_outliers:
+        df['charges'][num] = 55000.00000
+
 ### divide the data into features & target sets ###
 # target is column 4, Petrol_Consumption
-X = df.iloc[:, 0:4].values
-y = df.iloc[:, 4].values
+X = df.iloc[:, 0:6].values
+y = df.iloc[:, 6].values
 
 ### split the into training and testing data sets ###
 ### import ###
@@ -223,11 +273,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 ### feature scaling ### 
 ### import ###
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import StandardScalar
 ### set the scalar ###
-nm = Normalizer()
-X_train = nm.fit_transform(X_train)
-X_test = nm.transform(X_test)
+sc = StandardScalar()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
 
 ### train the Linear Ridge model ###
 ### import ###
@@ -269,11 +319,6 @@ elastic.fit(X_train,y_train)
 
 print(elastic.best_params_)# fit the model on the X, Y train data
 print(elastic.best_score_)
-
-
-
-
-
 
 
 ### scaling ### 
