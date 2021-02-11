@@ -1,21 +1,21 @@
 # CS_Notes
 
-A collection of important notes.
+A collection of templates and notes.
 
 so far...
 
- - SQL
+ - [SQL](https://github.com/CVanchieri/CS_Notes/blob/main/SQL_Notes)
+ 
+ - [Flask App](https://github.com/CVanchieri/FlaskApp_Template)
+ 
+ - [AWS Lambda Function](https://github.com/CVanchieri/AWSLambdaFunction_Template)
 
- - Natural Language Processing 
+ - [Natural Language Processing](https://github.com/CVanchieri/CS_Notes/tree/main/NLP_Notes)
  
- - Classification
+ - [Classification](https://github.com/CVanchieri/CS_Notes/tree/main/Classification_Notes)
  
- - Regression
+ - [Regression](https://github.com/CVanchieri/CS_Notes/tree/main/Regression_Notes)
  
- - AWS Lambda Function 
+ - [Neural Networks](https://github.com/CVanchieri/CS_Notes/tree/main/NeuralNetwork_Notes)
  
- - Flask App
- 
- - Neural Networks
- 
- - Algorithm Analysis
+ - [Algorithm Analysis](https://github.com/CVanchieri/CS_Notes/tree/main/AlgorithmAnalysis_Notes)
