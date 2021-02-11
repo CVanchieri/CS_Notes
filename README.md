@@ -6,4 +6,16 @@ so far...
 
  - SQL
 
- - NLP 
+ - Natural Language Processing 
+ 
+ - Classification
+ 
+ - Regression
+ 
+ - AWS Lambda Function 
+ 
+ - Flask App
+ 
+ - Neural Networks
+ 
+ - Algorithm Analysis
