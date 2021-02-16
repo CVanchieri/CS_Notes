@@ -48,24 +48,38 @@ docker run -p 8000:8000 python-fastapi # check docker_webapp folder
 
 ''' Docker commands '''
 # Docker for computer must be running 
+### check docker version ### 
+docer -version 
 ### run a container ### 
-docker run hello-world # looks for image on local system, if not found downloads from docker hub, will create a new container 
+docker run hello-world # create a container from an image on local system, if not found downloads from docker hub, will create a new container 
 docker run -it ubuntu bash # using the -it flag allows us to interact
 ### run a container already local ### 
 docker start –attach <container name> # will use a container specified and not create a new one
 ### stop a container running locally ### 
-docker stop <container name> # this will stop containers that run continuously
+docker stop <container name> # this will stop a container that is running, shuts down properly
+### stop/kill a container immediately ###
+docker kill <container name> # this will stop a container that is running, shuts down immediately
 ### remove a local container ### 
 docker rm <container name> # remove a local container, must be stopped first
-### check local containers ### 
-docker ps -a # lists the containers that are local 
-# status UP shows a docker container is running 
+### create a new image of an edited container locally ###
+docker commit <conatainer name> <username/imagename>
+### list all running containers ### 
+docker ps 
+### check local containers running and exited ### 
+docker ps -a # status UP shows a docker container is running  
+### access the running container ### 
+docker exec -it <container name> bash
 ### look inside the container ### 
 docker top <container name> # see what the container is running 
+### push an image to the docker hub repository ### 
+docker push <username/image name>
+### pull an image from docker repository ### 
+docker pull <image name> 
 ### list image on the local system ###
 docker image ls # produces a listing of images on our system
 ### remove image from local system ###
 docker image rm <image name> # remove the image locally 
+docker rmi <image name>
 
 
 ''' build and run '''
@@ -73,7 +87,7 @@ docker image rm <image name> # remove the image locally
 # create a virtual environment
 # same set up as VIM, create directory, working file, requirements.txt 
 # add requirements.txt through Dockerfile
-### build from the local docker file ### 
+### build from a specified docker file ### 
 docker build -t python-fastapi . # . represents the current directory
 docker run python-imdb # run the Dockerfile and set a name
 docker run -p 8000:8000 python-fastapi # a web app needs to specify the port and host numbers 
