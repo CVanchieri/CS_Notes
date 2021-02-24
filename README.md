@@ -19,3 +19,12 @@ so far...
  - [Neural Networks](https://github.com/CVanchieri/CS_Notes/tree/main/NeuralNetwork_Notes)
  
  - [Algorithm Analysis](https://github.com/CVanchieri/CS_Notes/tree/main/AlgorithmAnalysis_Notes)
+
+ - [Pickle](https://github.com/CVanchieri/CS_Notes/tree/main/Pickle_Notes)
+ 
+ - [Docker](https://github.com/CVanchieri/CS_Notes/blob/main/Docker_Notes)
+ 
+ - [K-Fold CrossValidation](https://github.com/CVanchieri/CS_Notes/blob/main/KFoldCrossValidation_Notes)
+
+ - [Computer Vision](https://github.com/CVanchieri/CS_Notes/tree/main/ComputerVision_Notes)
+
