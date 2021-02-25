@@ -1,6 +1,5 @@
 
-''' OpenCV colors & detection '''
-### extract colors from an image or video ### 
+''' OpenCV colors detection notes '''
 
 ### imports ### 
 import numpy as np 

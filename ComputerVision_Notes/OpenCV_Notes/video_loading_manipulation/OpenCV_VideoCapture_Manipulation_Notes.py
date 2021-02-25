@@ -1,8 +1,9 @@
+''' capture a video & loading a video''' 
+
 ### imports ### 
 import numpy as np
 import cv2
 
-''' capture a video & loading a video''' 
 # must use local terminal, vscode did not work
 ### initiate the video capture ### 
 cap = cv2.VideoCapture(0) # represents which camera to use, takes hold of camera 

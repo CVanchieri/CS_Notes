@@ -1,5 +1,5 @@
 
-''' OpenCV Drawing '''
+''' OpenCV Drawing Notes '''
  # lines 
  # images 
  # circles
@@ -9,7 +9,7 @@
 import numpy as np 
 import cv2
 
-''' drawing capabilities, lines, shapes, text ''' 
+''' drawing lines, shapes, text ''' 
 ### initiate the video capture ### 
 cap = cv2.VideoCapture(0) # represents which camera to use, takes hold of camera 
 # cap = cv2.VideoCapture('filename') # name of the mp4 video to use 
