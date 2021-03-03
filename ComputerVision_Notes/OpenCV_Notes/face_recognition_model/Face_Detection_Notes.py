@@ -1,3 +1,0 @@
-''' Face recognition model '''
-
-### 

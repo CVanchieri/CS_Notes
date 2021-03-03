@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-cmake = "*"
-dlib = "*"
-face-recognition = "*"
-numpy = "*"
 opencv-python = "*"
+numpy = "*"
+imutils = "*"
+argparse = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
